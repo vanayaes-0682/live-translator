@@ -46,7 +46,7 @@ TTS_SPEED = 1.0
 # ---------------------------------------------------------------------------
 def translate_text(text: str, source_lang: str) -> str:
     """Translate text from source_lang to the opposite language."""
-    if source_lang == "en":
+    if source_lang != "es":
         target_lang = "Spanish (Mexican, professional tone)"
         instruction = f"Translate the following English text to {target_lang}. Return ONLY the translated text, no explanations."
     else:
