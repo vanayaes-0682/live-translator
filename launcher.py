@@ -44,10 +44,10 @@ FORMAT = pyaudio.paInt16
 CHANNELS = 1
 RATE = 16000
 SILENCE_THRESHOLD = 500
-SILENCE_DURATION = 1.5
-MIN_AUDIO_DURATION = 0.5
-TTS_VOICE = "nova"
-TTS_SPEED = 1.0
+SILENCE_DURATION = 0.6
+MIN_AUDIO_DURATION = 0.3
+TTS_VOICE = "onyx"
+TTS_SPEED = 1.01
 
 # Shared state
 _running = False
@@ -92,12 +92,11 @@ def transcribe_audio(wav_bytes):
     finally:
         Path(tmp).unlink(missing_ok=True)
 
-
 def translate_text(text, source_lang):
-    if source_lang == "en":
-        instruction = "Translate the following English text to Spanish (Mexican, professional tone). Return ONLY the translated text."
+    if source_lang != "es":
+        instruction = "You are a professional translator. Translate the following text from English to Mexican Spanish. Output only the translated text, nothing else."
     else:
-        instruction = "Translate the following Spanish text to English (professional tone). Return ONLY the translated text."
+        instruction = "You are a professional translator. Translate the following text from Spanish to English. Output only the translated text, nothing else."
     resp = client.chat.completions.create(
         model="gpt-4o",
         messages=[
@@ -148,7 +147,7 @@ def find_virtual_cable_output(pa):
 def translation_loop():
     global _running
     pa = pyaudio.PyAudio()
-    output_device = find_virtual_cable_output(pa)
+    output_device = None
 
     stream = pa.open(
         format=FORMAT, channels=CHANNELS, rate=RATE,
@@ -169,7 +168,7 @@ def translation_loop():
                 if text:
                     translation = translate_text(text, lang)
                     audio_out = text_to_speech(translation)
-                    play_audio(audio_out, pa, output_device)
+                    play_audio(audio_out, pa, None)
             except Exception as e:
                 print(f"[Worker error] {e}")
             finally:

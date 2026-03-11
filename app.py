@@ -43,7 +43,7 @@ CHUNK = 1024
 FORMAT = pyaudio.paInt16
 CHANNELS = 1
 RATE = 16000
-SILENCE_THRESHOLD = 200       # RMS below this = silence
+SILENCE_THRESHOLD = 500       # RMS below this = silence
 SILENCE_DURATION = 0.6        # seconds of silence before processing
 MIN_AUDIO_DURATION = 0.3      # ignore clips shorter than this (seconds)
 
@@ -110,20 +110,12 @@ def update_caption(text: str):
 def translate_text(text: str, source_lang: str) -> str:
     """Translate text from source_lang to the opposite language."""
     if source_lang != "es":
-        target_lang = "Spanish (Mexican, professional tone)"
-        instruction = (
-            f"Translate the following English text to {target_lang}. "
-            "Return ONLY the translated text, no explanations."
-        )
+        instruction = "You are a professional translator. Translate the following text from English to Mexican Spanish. Output only the translated text, nothing else."
     else:
-        target_lang = "English (professional tone)"
-        instruction = (
-            f"Translate the following Spanish text to {target_lang}. "
-            "Return ONLY the translated text, no explanations."
-        )
+        instruction = "You are a professional translator. Translate the following text from Spanish to English. Output only the translated text, nothing else."
 
     response = client.chat.completions.create(
-        model="gpt-4o-mini",
+        model="gpt-4o",
         messages=[
             {"role": "system", "content": instruction},
             {"role": "user", "content": text},

@@ -9,7 +9,7 @@ pip install -r requirements.txt
 pip install pyinstaller pystray Pillow
 
 echo [2/4] Building LiveTranslator.exe ...
-pyinstaller --noconfirm --onefile --windowed --name "LiveTranslator" --add-data ".env;." launcher.py
+pyinstaller --noconfirm --onefile --windowed --name "LiveTranslator" --add-data ".env;." app.py
 
 echo [3/4] Copying .env into dist folder...
 if exist .env (
